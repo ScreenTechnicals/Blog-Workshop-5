@@ -1,34 +1,34 @@
 import React from "react";
-import Link from 'next/link'
+import Link from 'next/link';
 
-const Page = () => {
+async function getData() {
+  const data = await fetch('http://localhost:4000/posts')
 
-  const Blogdata = [
-    {
-      title: 'Reactjs',
-      subTitle: 'React is a free and open-source front-end JavaScript library for building user interfaces based on components. It is maintained by Meta and a community of individual developers and companies. React can be used to develop single-page, mobile, or server-rendered applications with frameworks like Next.js',
-    },
-    {
-      title: 'Nextjs',
-      subTitle: 'Next.js is an open-source web development framework created by the private company Vercel providing React-based web applications with server-side rendering and static website generation.',
-    },
-  ]
+  const res = await data.json()
+
+  return res;
+}
+
+export default async function Blog() {
+
+  const data = await getData()
 
   return (
     <>
-      <h1 className="text-3xl" >List of Blogs</h1>
-      <br />
-      <ul>
-        {Blogdata.map((data, index) => {
+      <h1 className="text-xl">List of Blogs</h1>
+      {
+        data.map((blog, index) => {
           return (
-            <li key={index}>
-              <Link href={`/blogs/${data.title}`} >{data.title}</Link>
-            </li>
+            <div key={index} className="border py-3 my-5">
+              <h1>{blog.title}</h1>
+              <p>{blog.body}</p>
+              <small>{blog.author}</small>
+              <br />
+              <Link href={`/blogs/${blog.id}`} >read more...</Link>
+            </div>
           )
-        })}
-      </ul>
+        })
+      }
     </>
   )
-};
-
-export default Page;
+}
